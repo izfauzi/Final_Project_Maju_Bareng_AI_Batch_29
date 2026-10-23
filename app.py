@@ -1,7 +1,7 @@
 import os
 import streamlit as st
-from exa_py import Exa
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # Load environment variables (development only)
 load_dotenv()
@@ -12,7 +12,7 @@ if not EXA_API_KEY:
     st.error("EXA_API_KEY not set. Please add it to a .env file.")
     st.stop()
 
-client = Exa(api_key=EXA_API_KEY)
+client = OpenAI(base_url="https://api.exa.ai", api_key=EXA_API_KEY)
 
 # Page config & custom CSS
 st.set_page_config(page_title="Exa.ai ChatBot", page_icon="🤖", layout="centered")
@@ -34,7 +34,7 @@ if user_input:
     st.session_state.history.append({"role": "user", "content": user_input})
     with st.spinner("Thinking…"):
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # default model; can be changed later via UI
+            model="exa",  # Exa.ai model
             messages=st.session_state.history,
             stream=False  # set to True for streaming tokens (requires extra UI work)
         )
